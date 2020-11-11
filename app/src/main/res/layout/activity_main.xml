@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="#EAE7DC"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"/>
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_main"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="center" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="#000000"
+        app:backgroundTint="#E98074"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <Button
+        android:id="@+id/button_first"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="17dp"
+        android:drawableBottom="@android:drawable/ic_lock_idle_alarm"
+
+        android:background="@drawable/round_button"
+         />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
