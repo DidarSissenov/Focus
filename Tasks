@@ -1,0 +1,19 @@
+To finish our project in time we'll need to divide the development in small tasks:
+
+- Create the layout for the main screen:
+  * Create the divisions on the app (Top, middle (biggest one) and bottom);
+  * Create and position buttons (New task and Timer button);
+  * Create the streak icon;
+  * Choose the placeholder for the created activities;
+ 
+- Create a new activity for "Create new task" menu;
+  * Create all the blanks for this menu (Task name, Due date, Alarm, Repeat and note)
+  * Make sure every field receive the right type of data
+  * When user click on the due date, it should open a roll-type selector for the day, month and year
+  
+- Create a new activity for "Pomodoro Timer" menu;
+  * Create the timer and break field;
+  * Create start/stop buttom and cancel buttom;
+  
+  
+ These are mainly layout tasks and the chosen components need to be picked wisely to address coding properly. Let's talk about it in a time where everybody can be involved.
