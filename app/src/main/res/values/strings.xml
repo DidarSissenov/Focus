@@ -11,4 +11,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="back">back</string>
     <string name="new_task">New task</string>
+    <string name="alarm">Alarm</string>
+    <string name="dueDate">Due Date</string>
 </resources>

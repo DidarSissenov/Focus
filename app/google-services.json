@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "690604308832",
+    "firebase_url": "https://focus-bb84a.firebaseio.com",
+    "project_id": "focus-bb84a",
+    "storage_bucket": "focus-bb84a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690604308832:android:8c9d9c6443df7d8c60c605",
+        "android_client_info": {
+          "package_name": "com.example.focus2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690604308832-27s91tbs6o9gs9j0ng9bsehjhrsmaj8e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAeNkLIA9oH6OJCNTjDFdNyHkWUf-73tA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690604308832-27s91tbs6o9gs9j0ng9bsehjhrsmaj8e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
