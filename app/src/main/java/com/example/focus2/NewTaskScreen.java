@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -12,11 +13,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TimePicker;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
@@ -32,11 +35,13 @@ public class NewTaskScreen extends AppCompatActivity {
 
     final Calendar myCalendar = Calendar.getInstance();
 
-    EditText taskName = findViewById(R.id.taskName);
+    EditText taskName;
     EditText dueDate;
     EditText alarm;
 
-    TextInputLayout notes = findViewById(R.id.notes);
+    TextInputEditText notes;
+
+    Button doneButton;
 
     TimePicker myTimePicker;
     TimePickerDialog timePickerDialog;
@@ -52,6 +57,8 @@ public class NewTaskScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task_screen);
+
+        taskName = findViewById(R.id.taskName);
 
         //Back to main screen button
         ImageButton backButton = findViewById(R.id.backButton);
@@ -78,6 +85,16 @@ public class NewTaskScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openTimePickerDialog(false);
+            }
+        });
+
+        notes = findViewById(R.id.notes);
+
+        doneButton = findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickDone();
             }
         });
     }
@@ -159,7 +176,7 @@ public class NewTaskScreen extends AppCompatActivity {
     private void onClickDone()
     {
         task = new Task(taskName.getText().toString(), dueDate.getText().toString(),
-                alarm.getText().toString(), false, notes.getPlaceholderText().toString());
+                alarm.getText().toString(), false, notes.getText().toString());
 
         taskList.add(task);
     }
