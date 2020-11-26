@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/add_new_task"
         android:tint="#000000"
         app:backgroundTint="#E98074"
         app:srcCompat="@android:drawable/ic_menu_add" />

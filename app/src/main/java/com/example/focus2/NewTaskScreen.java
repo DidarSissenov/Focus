@@ -1,5 +1,7 @@
 package com.example.focus2;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
@@ -15,16 +17,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TimePicker;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 
 public class NewTaskScreen extends AppCompatActivity {
 
     final Calendar myCalendar = Calendar.getInstance();
 
+    EditText taskName = findViewById(R.id.taskName);
     EditText dueDate;
     EditText alarm;
+
+    TextInputLayout notes = findViewById(R.id.notes);
 
     TimePicker myTimePicker;
     TimePickerDialog timePickerDialog;
@@ -32,7 +44,8 @@ public class NewTaskScreen extends AppCompatActivity {
 
     final static int ONE = 1;
 
-
+    Task task;
+    List<Task> taskList = new ArrayList<Task>();
 
 
     @Override
@@ -141,6 +154,14 @@ public class NewTaskScreen extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), ONE, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+    }
+
+    private void onClickDone()
+    {
+        task = new Task(taskName.getText().toString(), dueDate.getText().toString(),
+                alarm.getText().toString(), false, notes.getPlaceholderText().toString());
+
+        taskList.add(task);
     }
 
 }

@@ -15,4 +15,6 @@
     <string name="dueDate">Due Date</string>
     <string name="done">Done</string>
     <string name="notes">Notes</string>
+    <string name="add_new_task">Add New Task</string>
+    <string name="repeat">Repeat</string>
 </resources>
