@@ -13,4 +13,6 @@
     <string name="new_task">New task</string>
     <string name="alarm">Alarm</string>
     <string name="dueDate">Due Date</string>
+    <string name="done">Done</string>
+    <string name="notes">Notes</string>
 </resources>
