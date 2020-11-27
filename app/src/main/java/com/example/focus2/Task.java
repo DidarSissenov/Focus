@@ -57,9 +57,9 @@ public class Task {
 
 
     public String toString() {
-        String result="";
+        String result;
 
-        result.format("Task: %s\nDue Date: %s\nAlarm: %s\nRepeat: %b\nNotes: %s",
+        result = String.format("Task: %s\nDue Date: %s\nAlarm: %s\nRepeat: %b\nNotes: %s",
                 this.name, this.date, this.alarm, this.repeat, this.notes);
 
         return result;

@@ -3,6 +3,7 @@ package com.example.focus2;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -14,11 +15,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TimePicker;
 
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -31,6 +36,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
+import static com.example.focus2.MainActivity.taskList;
+
 public class NewTaskScreen extends AppCompatActivity {
 
     final Calendar myCalendar = Calendar.getInstance();
@@ -38,19 +45,19 @@ public class NewTaskScreen extends AppCompatActivity {
     EditText taskName;
     EditText dueDate;
     EditText alarm;
-
+    Switch repeat;
+    boolean repeatVal=false;
     TextInputEditText notes;
 
     Button doneButton;
 
-    TimePicker myTimePicker;
     TimePickerDialog timePickerDialog;
     DatePickerDialog.OnDateSetListener onDateSetListener;
 
     final static int ONE = 1;
 
     Task task;
-    List<Task> taskList = new ArrayList<Task>();
+
 
 
     @Override
@@ -87,6 +94,19 @@ public class NewTaskScreen extends AppCompatActivity {
                 openTimePickerDialog(false);
             }
         });
+
+        repeat = findViewById(R.id.repeatSwitch);
+
+        //Need to be properly implemented
+        if(repeat != null) {
+            repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked)
+                        repeatVal = true;
+                }
+            });
+        }
 
         notes = findViewById(R.id.notes);
 
@@ -176,7 +196,7 @@ public class NewTaskScreen extends AppCompatActivity {
     private void onClickDone()
     {
         task = new Task(taskName.getText().toString(), dueDate.getText().toString(),
-                alarm.getText().toString(), false, notes.getText().toString());
+                alarm.getText().toString(), repeatVal, notes.getText().toString());
 
         taskList.add(task);
     }
