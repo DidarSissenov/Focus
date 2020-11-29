@@ -26,6 +26,8 @@ import android.widget.TimePicker;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +41,10 @@ import java.util.Locale;
 import static com.example.focus2.MainActivity.taskList;
 
 public class NewTaskScreen extends AppCompatActivity {
+
+    // Write a message to the database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("message");
 
     final Calendar myCalendar = Calendar.getInstance();
 

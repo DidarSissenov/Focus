@@ -5,12 +5,31 @@ public class Task {
     private String name, date, alarm, notes;
     private boolean repeat;
 
+    public Task() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
     public Task (String name, String date, String alarm, boolean repeat, String notes) {
+        // Constructor for all fields completed
         this.name = name;
         this.date = date;
         this.alarm = alarm;
         this.repeat = repeat;
         this.notes = notes;
+    }
+
+    public Task (String name, String date, String alarm, boolean repeat) {
+        // Constructor without notes
+        this.name = name;
+        this.date = date;
+        this.alarm = alarm;
+        this.repeat = repeat;
+    }
+
+    public Task (String name, String date) {
+        // Basic constructor for name and date
+        this.name = name;
+        this.date = date;
     }
 
     //Accessor methods
