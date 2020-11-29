@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +14,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity {
 
-    static protected List<Task> taskList = new ArrayList<Task>();
+    static protected List<Task> taskList = new ArrayList<>();
+
+    String[] titles = {"Do the dishes", "Walk the dog", "Read one chapter", "Buy bread"};
+    String[] description = {"11/21/2020", "11/22/2020", "11/24/2020", "11/25/2020"};
 
     ListView taskListView;
 
@@ -28,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         taskListView = findViewById(R.id.listViewTasks);
-
-        //ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, taskListView);
+        MyAdapter adapter = new MyAdapter(this, titles, description);
+        taskListView.setAdapter(adapter);
 
         FloatingActionButton fab = findViewById(R.id.newTaskButton);
         fab.setOnClickListener(new View.OnClickListener() {
