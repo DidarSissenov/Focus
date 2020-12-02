@@ -13,6 +13,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -26,8 +27,15 @@ import android.widget.TimePicker;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,18 +50,18 @@ import static com.example.focus2.MainActivity.taskList;
 
 public class NewTaskScreen extends AppCompatActivity {
 
-    // Write a message to the database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("message");
+   FirebaseUser user;
+   FirebaseDatabase database;
+   DatabaseReference myRef;
 
     final Calendar myCalendar = Calendar.getInstance();
 
     EditText taskName;
     EditText dueDate;
-    EditText alarm;
+    EditText alarmEt;
     Switch repeat;
     boolean repeatVal=false;
-    TextInputEditText notes;
+    TextInputEditText notesEt;
 
     Button doneButton;
 
@@ -70,6 +78,10 @@ public class NewTaskScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task_screen);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("users").child(user.getUid()).child("tasks");
 
         taskName = findViewById(R.id.taskName);
 
@@ -93,8 +105,8 @@ public class NewTaskScreen extends AppCompatActivity {
             }
         });
 
-        alarm = findViewById(R.id.alarmTime);
-        alarm.setOnClickListener(new View.OnClickListener() {
+        alarmEt = findViewById(R.id.alarmTime);
+        alarmEt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openTimePickerDialog(false);
@@ -114,7 +126,7 @@ public class NewTaskScreen extends AppCompatActivity {
             });
         }
 
-        notes = findViewById(R.id.notes);
+        notesEt = findViewById(R.id.notes);
 
         doneButton = findViewById(R.id.doneButton);
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -191,7 +203,7 @@ public class NewTaskScreen extends AppCompatActivity {
         String myFormat = "h:mm a";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
 
-        alarm.setText(sdf.format(targetCal.getTime()));
+        alarmEt.setText(sdf.format(targetCal.getTime()));
 
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), ONE, intent, 0);
@@ -199,12 +211,70 @@ public class NewTaskScreen extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
     }
 
+
     private void onClickDone()
     {
-        task = new Task(taskName.getText().toString(), dueDate.getText().toString(),
-                alarm.getText().toString(), repeatVal, notes.getText().toString());
+        String name = taskName.getText().toString().trim();
+        String date = dueDate.getText().toString().trim();
+        String alarm = alarmEt.getText().toString().trim();
+        String notes = notesEt.getText().toString().trim();
 
-        taskList.add(task);
+
+        if (name.isEmpty()) {
+            taskName.setError("Task name required");
+            taskName.requestFocus();
+            return;
+        }
+        if (date.isEmpty()) {
+            dueDate.setError("Due date required");
+            dueDate.requestFocus();
+            return;
+        }
+
+        task = new Task(name, date);
+        if(!alarm.isEmpty())
+            task.setAlarm(alarm);
+
+        if(!notes.isEmpty())
+            task.setNotes(notes);
+
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GenericTypeIndicator<ArrayList<Task>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Task>>() {};
+                ArrayList<Task> taskList = snapshot.getValue(genericTypeIndicator);
+
+                //Check if the list already exists, if not create it
+                if(taskList == null)
+                    taskList = new ArrayList<Task>();
+
+
+                //Add new Task
+                taskList.add(task);
+
+                //set updated list of tasks
+                database.getReference("users").child(user.getUid()).child("tasks").setValue(taskList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("TAG", "Failed to read value.", error.toException());
+            }
+        };
+
+        myRef.addValueEventListener(valueEventListener);
+
+        startActivity(new Intent(NewTaskScreen.this, MainActivity.class));
+        finish();
+        return;
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRef.removeEventListener((ChildEventListener) this);
+    }
 }

@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static android.view.View.VISIBLE;
 
@@ -61,8 +62,8 @@ public class UserRegistration extends AppCompatActivity {
     }
 
     private void registerUser() {
-        String name = nameET.getText().toString().trim();
-        String email = emailET.getText().toString().trim();
+        final String name = nameET.getText().toString().trim();
+        final String email = emailET.getText().toString().trim();
         String password = passwordET.getText().toString().trim();
 
         if (name.isEmpty()) {
@@ -102,15 +103,25 @@ public class UserRegistration extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()) {
-                            Toast.makeText(UserRegistration.this, "User has been registered successfully!", Toast.LENGTH_LONG);
-                            startActivity(new Intent(UserRegistration.this, MainActivity.class));
-                        }
-                        else{
-                            Toast.makeText(UserRegistration.this, "Failed to register user!", Toast.LENGTH_LONG);
-                        }
-                        progressBar.setVisibility(View.GONE);
-                    };
+                            User user = new User(name, email);
 
+                            FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(UserRegistration.this, "User has been registered successfully!", Toast.LENGTH_LONG);
+                                        startActivity(new Intent(UserRegistration.this, MainActivity.class));
+                                        finish();
+                                    }
+                                    else{
+                                        Toast.makeText(UserRegistration.this, "Failed to register user!", Toast.LENGTH_LONG);
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                    }
                 });
 
     }

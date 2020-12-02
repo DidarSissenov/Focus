@@ -1,5 +1,7 @@
 package com.example.focus2;
 
+import java.util.ArrayList;
+
 //Task class defines the properties of an user's task
 public class Task {
     private String name, date, alarm, notes;
