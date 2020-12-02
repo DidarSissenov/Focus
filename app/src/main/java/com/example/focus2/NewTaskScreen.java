@@ -23,7 +23,9 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -50,9 +52,6 @@ import static com.example.focus2.MainActivity.taskList;
 
 public class NewTaskScreen extends AppCompatActivity {
 
-   FirebaseUser user;
-   FirebaseDatabase database;
-   DatabaseReference myRef;
 
     final Calendar myCalendar = Calendar.getInstance();
 
@@ -79,9 +78,6 @@ public class NewTaskScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task_screen);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("users").child(user.getUid()).child("tasks");
 
         taskName = findViewById(R.id.taskName);
 
@@ -235,11 +231,16 @@ public class NewTaskScreen extends AppCompatActivity {
         if(!alarm.isEmpty())
             task.setAlarm(alarm);
 
-        if(!notes.isEmpty())
+        if(!notes.isEmpty()) {
             task.setNotes(notes);
+        }
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users").child(user.getUid()).child("tasks");
 
 
-        ValueEventListener valueEventListener = new ValueEventListener() {
+         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GenericTypeIndicator<ArrayList<Task>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Task>>() {};
@@ -254,7 +255,20 @@ public class NewTaskScreen extends AppCompatActivity {
                 taskList.add(task);
 
                 //set updated list of tasks
-                database.getReference("users").child(user.getUid()).child("tasks").setValue(taskList);
+                database.getReference("users").child(user.getUid()).child("tasks").setValue(taskList)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> mTask) {
+                                if (mTask.isSuccessful()) {
+
+                                    startActivity(new Intent(NewTaskScreen.this, MainActivity.class));
+                                    finish();
+                                }
+                                else {
+                                    Toast.makeText(NewTaskScreen.this, "Failed to add new task", Toast.LENGTH_LONG);
+                                }
+                            }
+                        });
             }
 
             @Override
@@ -264,17 +278,8 @@ public class NewTaskScreen extends AppCompatActivity {
             }
         };
 
-        myRef.addValueEventListener(valueEventListener);
-
-        startActivity(new Intent(NewTaskScreen.this, MainActivity.class));
-        finish();
-        return;
+        myRef.addListenerForSingleValueEvent(valueEventListener);
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRef.removeEventListener((ChildEventListener) this);
-    }
 }
