@@ -7,9 +7,7 @@ public class User {
     public String name, email;
     public ArrayList<Task> taskList;
 
-    public User() {
-
-    }
+    public User() {}
 
     public User(String name, String email) {
         this.name = name;

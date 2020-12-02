@@ -7,9 +7,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     static protected List<Task> taskList = new ArrayList<>();
 
-    String[] titles = {"Do the dishes", "Walk the dog", "Read one chapter", "Buy bread"};
-    String[] description = {"11/21/2020", "11/22/2020", "11/24/2020", "11/25/2020"};
+    FirebaseDatabase database;
+    DatabaseReference ref;
+    ArrayList<Task> tasks = new ArrayList<>();
 
     ListView taskListView;
 
@@ -28,9 +37,42 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("tasks");
+
         taskListView = findViewById(R.id.listViewTasks);
-        MyAdapter adapter = new MyAdapter(this, titles, description);
+        final MyAdapter adapter = new MyAdapter(MainActivity.this, tasks);
         taskListView.setAdapter(adapter);
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Task value = snapshot.getValue(Task.class);
+                tasks.add(value);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         FloatingActionButton fab = findViewById(R.id.newTaskButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -40,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
